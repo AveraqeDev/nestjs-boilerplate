@@ -1,14 +1,13 @@
 import {
-  Body,
   Controller,
   Get,
   Inject,
   NotFoundException,
   Param,
   ParseIntPipe,
-  Post,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto } from './dtos/user.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
@@ -17,11 +16,13 @@ export class UserController {
   @Inject(UserService)
   private readonly service: UserService;
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getAll(): Promise<User[]> {
     return await this.service.getAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
     const user = await this.service.findOneById(id);
@@ -31,10 +32,5 @@ export class UserController {
     }
 
     return user;
-  }
-
-  @Post()
-  async create(@Body() body: CreateUserDto): Promise<User> {
-    return await this.service.create(body);
   }
 }

@@ -21,6 +21,13 @@ export class UserService {
     return await this.repository.findOneBy({ username });
   }
 
+  async findOneByUsernameWithPassword(username: string): Promise<User | null> {
+    return await this.repository.findOne({
+      select: { password: true },
+      where: { username },
+    });
+  }
+
   async create(data: CreateUserDto): Promise<User> {
     const user: User = new User();
 
