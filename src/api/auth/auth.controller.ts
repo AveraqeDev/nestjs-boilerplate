@@ -8,8 +8,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { CreateUserDto } from '../user/dtos/user.dto';
-import { User } from '../user/entities/user.entity';
+import { CreateUserDto, UserDto } from '../user/dtos';
+import { User } from '../user/entities';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt.guard';
@@ -29,13 +29,16 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body() data: CreateUserDto): Promise<User> {
-    return await this.userService.create(data);
+  async register(@Body() data: CreateUserDto): Promise<UserDto> {
+    const user = await this.userService.create(data);
+    const userCopy = Object.assign({}, user);
+    delete userCopy.password;
+    return userCopy;
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('whoami')
-  whoAmI(@Req() req: Request): User {
-    return req.user as User;
+  whoAmI(@Req() req: Request): UserDto {
+    return req.user as UserDto;
   }
 }

@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
-import { User } from './entities/user.entity';
+import { UserDto } from './dtos';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -18,13 +18,13 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAll(): Promise<User[]> {
+  async getAll(): Promise<UserDto[]> {
     return await this.service.getAll();
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<UserDto> {
     const user = await this.service.findOneById(id);
 
     if (!user) {

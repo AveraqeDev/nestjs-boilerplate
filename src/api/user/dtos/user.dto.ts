@@ -1,35 +1,35 @@
 import {
+  IsAlphanumeric,
+  IsDateString,
   IsEmail,
   IsEnum,
+  IsNumber,
   IsOptional,
   IsString,
-  Matches,
-  MaxLength,
-  MinLength,
 } from 'class-validator';
-import { Role } from '../entities/role.enum';
+import { Role } from '../entities';
 
-export class AuthCrendentialsDto {
+export class UserDto {
+  @IsNumber()
+  id: number;
+
+  @IsEnum(Role)
+  role: Role;
+
   @IsString()
-  @MinLength(4)
-  @MaxLength(20)
+  @IsAlphanumeric()
   username: string;
 
-  @IsString()
-  @MinLength(8)
-  @MaxLength(32)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'Password is too weak!',
-  })
-  password: string;
-}
-
-export class CreateUserDto extends AuthCrendentialsDto {
-  @IsOptional()
   @IsEmail()
-  email?: string;
+  email: string;
+
+  @IsDateString()
+  createdAt: Date;
+
+  @IsDateString()
+  updatedAt: Date;
 
   @IsOptional()
-  @IsEnum(Role)
-  role?: Role;
+  @IsDateString()
+  deletedAt: Date;
 }
