@@ -22,10 +22,17 @@ export class UserService {
   }
 
   async findOneByUsernameWithPassword(username: string): Promise<User | null> {
-    return await this.repository.findOne({
-      select: { password: true },
+    const user = await this.repository.findOne({
+      select: {
+        id: true,
+        role: true,
+        username: true,
+        email: true,
+        password: true,
+      },
       where: { username },
     });
+    return user;
   }
 
   async create(data: CreateUserDto): Promise<User> {
